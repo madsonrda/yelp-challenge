@@ -35,3 +35,17 @@ services:
     container_name: cassandra
     ports:
       - '9042:9042'
+  spark-master:
+    build: './docker/spark/spark-master'
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - ENABLE_INIT_DAEMON=false
+    depends_on:
+      - cassandra
+      - broker
+    volumes:
+      - './mnt/spark/apps:/opt/spark-apps'
+      - './mnt/spark/apps:/opt/spark-data'
