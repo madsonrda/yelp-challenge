@@ -14,8 +14,11 @@ services:
       - KAFKA_BROKER_ID=1
       - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     depends_on:
       - zookeeper
+    ports:
+      - '9092:9092'
   kafka-setup:
     image: 'confluentinc/cp-kafka'
     container_name: kafka-setup
@@ -47,5 +50,5 @@ services:
       - cassandra
       - broker
     volumes:
-      - './mnt/spark/apps:/opt/spark-apps'
-      - './mnt/spark/apps:/opt/spark-data'
+      - './mnt/spark/spark-apps:/opt/spark-apps'
+      - './mnt/spark/spark-data:/opt/spark-data'

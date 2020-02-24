@@ -7,8 +7,8 @@ import pygeohash as pgh
 spark = SparkSession.builder.appName("business-rec-cassandra-write").getOrCreate()
 
 #load JSON Data
-business_df = spark.read.json('business.json')
-review_df = spark.read.json('review.json')
+business_df = spark.read.json('/opt/spark-data/business.json')
+review_df = spark.read.json('/opt/spark-data/review.json')
 
 #create user categories dataframe
 user_cat_df = F.broadcast(business_df).join(review_df,['business_id'])\
@@ -47,3 +47,6 @@ geo_business.write\
 
 #stop spark session
 spark.stop()
+#spark-submit --master local[*] --conf spark.cassandra.connection.host=cassandra /opt/spark-apps/business-rec-cassandra-write.py
+#kafka-console-producer --broker-list localhost:9092 --topic
+#kafkaStream = KafkaUtils.createDirectStream(ssc, ['user'], {"metadata.broker.list":'boker:9092'})
