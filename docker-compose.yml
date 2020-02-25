@@ -1,38 +1,5 @@
 version: '3'
 services:
-  zookeeper:
-    image: 'confluentinc/cp-zookeeper'
-    container_name: zookeeper
-    environment:
-      - ZOOKEEPER_CLIENT_PORT=2181
-      - ZOOKEEPER_TICK_TIME=2000
-      - ZOOKEEPER_SYNC_LIMIT=2
-  broker:
-    image: 'confluentinc/cp-kafka'
-    container_name: broker
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
-      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
-    depends_on:
-      - zookeeper
-    ports:
-      - '9092:9092'
-  kafka-setup:
-    image: 'confluentinc/cp-kafka'
-    container_name: kafka-setup
-    depends_on:
-      - broker
-    command: "bash -c 'echo Waiting for Kafka to be ready... && \
-                       sleep 20 && \
-                       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic user && \
-                       kafka-topics --create --if-not-exists --zookeeper zookeeper:2181 --partitions 1 --replication-factor 1 --topic business-recommendation && \
-                       sleep 20 && \
-                       shutdown -h now'"
-    environment:
-      - KAFKA_BROKER_ID=2
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
   cassandra:
     build: './docker/cassandra'
     container_name: cassandra
@@ -41,6 +8,7 @@ services:
   spark-master:
     build: './docker/spark/spark-master'
     container_name: spark-master
+    hostname: "spark-master"
     ports:
       - "8080:8080"
       - "7077:7077"
@@ -48,7 +16,6 @@ services:
       - ENABLE_INIT_DAEMON=false
     depends_on:
       - cassandra
-      - broker
     volumes:
       - './mnt/spark/spark-apps:/opt/spark-apps'
       - './mnt/spark/spark-data:/opt/spark-data'
