@@ -40,6 +40,14 @@ The application file is in ``mnt/spark/spark-apps/review_summary.py``.
 This application aggregates social engagement information by user.
 The application file is in ``mnt/spark/spark-apps/user_summary.py``.
 
+## Extract yelp data files
+
+To extract yelp data files:
+
+```
+./extract-yelp-files.sh /your/path/yelp_dataset.tar.gz
+```
+
 ## Running Docker containers
 
 To start the Docker containers:
@@ -48,18 +56,18 @@ To start the Docker containers:
 docker-compose up -d --no-deps --build
 ```
 
-A few minutes later you should see the following message:
-
-```
-spark submit complete successfully
-```
-
 ## Launch Spark applications
 
 To running Spark applications:
 
 ```
 docker-compose exec spark-master /bin/bash /opt/spark-apps/submit.sh
+```
+
+A few minutes later you should see the following message:
+
+```
+spark submit complete successfully
 ```
 
 ## Check the tables in Cassandra
